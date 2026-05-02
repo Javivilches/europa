@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Simulador Europa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family: 'Inter', sans-serif;
+    background: url('fondo.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color:white;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(2,6,23,0.75);
+    z-index:-1;
+}
+
+h1{
+    text-align:center;
+    padding:20px;
+    margin:0;
+    font-size:26px;
+    font-weight:700;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+}
+
+h1 img{
+    height:34px;
+}
+
+.container{
+    display:flex;
+    justify-content:center;
+    gap:25px;
+    padding:20px;
+}
+
+.card{
+    background: rgba(15, 23, 42, 0.85);
+    border-radius:16px;
+    padding:18px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+    border:1px solid rgba(255,255,255,0.05);
+}
+
+.izq{ width:400px; }
+.der{ width:330px; }
+
+.nav{
+    text-align:center;
+    margin-bottom:12px;
+}
+
+.nav span{
+    padding:6px 12px;
+    margin:3px;
+    cursor:pointer;
+    border-radius:8px;
+    background:#1e293b;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.activa{
+    background:#ef4444;
+    box-shadow:0 0 10px rgba(239,68,68,0.7);
+}
+
+.titulo{
+    font-size:18px;
+    text-align:center;
+    font-weight:700;
+    letter-spacing:1px;
+    margin-bottom:12px;
+}
+
+.partido{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:10px 0;
+    font-size:15px;
+    font-weight:600;
+}
+
+.equipo{
+    width:140px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.equipo img{
+    width:34px;
+    height:34px;
+}
+
+.marcador{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+input{
+    width:40px;
+    height:36px;
+    text-align:center;
+    border-radius:10px;
+    border:none;
+    background:#020617;
+    color:white;
+    font-weight:700;
+}
+
+.fila{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px 0;
+    font-size:15px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.fila span{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.fila img{
+    width:34px;
+    height:34px;
+}
+
+.cabecera{
+    font-weight:700;
+    border-bottom:1px solid #334155;
+    padding-bottom:8px;
+    margin-bottom:8px;
+}
+
+/* COLORES EUROPA */
+.champions{
+    color:#3b82f6;
+    font-weight:700;
+}
+
+.europaleague{
+    color:#facc15;
+    font-weight:700;
+}
+
+.conference{
+    color:#22c55e;
+    font-weight:700;
+}
+
+.real{
+    color:#f97316;
+    font-weight:700;
+}
+
+.notas{
+    max-width:900px;
+    margin:10px auto 30px auto;
+    text-align:center;
+    font-size:13px;
+    color:#cbd5f5;
+    opacity:0.95;
+    line-height:1.7;
+}
+
+.leyenda{
+    display:inline-block;
+    margin-top:8px;
+    text-align:left;
+}
+
+@media (max-width: 768px){
+
+    .container{
+        flex-direction: column;
+        align-items: center;
+        padding:10px;
+    }
+
+    .izq, .der{
+        width:100%;
+        max-width:420px;
+    }
+
+    h1{
+        font-size:20px;
+        flex-direction: column;
+        gap:5px;
+    }
+
+    h1 img{
+        height:26px;
+    }
+
+    .nav span{
+        padding:6px 10px;
+        font-size:14px;
+    }
+
+    .partido{
+        font-size:13px;
+        margin:8px 0;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+    }
+
+    .marcador{
+        flex:0 0 auto;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:6px;
+    }
+
+    .equipo{
+        flex:1;
+        width:auto;
+        font-size:13px;
+        display:flex;
+        align-items:center;
+    }
+
+    .equipo:first-child{
+        justify-content:flex-start;
+    }
+
+    .equipo:last-child{
+        justify-content:flex-end;
+    }
+
+    .equipo img{
+        width:26px;
+        height:26px;
+    }
+
+    input{
+        width:42px;
+        height:38px;
+        font-size:16px;
+    }
+
+    .fila{
+        font-size:14px;
+        padding:8px 0;
+    }
+
+    .fila img{
+        width:28px;
+        height:28px;
+    }
+
+    .notas{
+        font-size:12px;
+        padding:0 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<h1>
+SIMULADOR EUROPA
+<img src="laliga.png">
+</h1>
+
+<div class="container">
+
+<div class="card izq">
+<div class="nav" id="nav"></div>
+<div class="titulo" id="tituloJornada"></div>
+<div id="partidos"></div>
+</div>
+
+<div class="card der">
+<div class="titulo">🏆 CLASIFICACIÓN</div>
+
+<div class="fila cabecera">
+<span>Equipo</span>
+<span>Pts</span>
+</div>
+
+<div id="tabla"></div>
+</div>
+
+</div>
+
+<div class="notas">
+* Introduce los resultados y se actualizará la clasificación automáticamente<br>
+* Clasificación calculada teniendo en cuenta los enfrentamientos directos entre equipos en caso de empate a puntos.<br>
+
+<div class="leyenda">
+<span style="color:#3b82f6;">■</span> 5º clasificado → Champions League<br>
+<span style="color:#facc15;">■</span> Europa League → 2 plazas en total<br>
+<span style="color:#22c55e;">■</span> Conference League → siguiente plaza disponible<br>
+<span style="color:#f97316;">■</span> Real Sociedad → plaza europea asegurada por Copa del Rey
+</div>
+</div>
+
+<script>
+
+const base = {
+"BETIS":50,
+"GETAFE":44,
+"CELTA":44,
+"R.SOCIEDAD":43,
+"OSASUNA":42,
+"ATHLETIC":41
+};
+
+const jornadas = {
+34:[
+["ALAVÉS","ATHLETIC"],
+["BETIS","OVIEDO"],
+["CELTA","ELCHE"],
+["GETAFE","RAYO"],
+["OSASUNA","BARCELONA"],
+["SEVILLA","R.SOCIEDAD"]
+],
+35:[
+["ATHLETIC","VALENCIA"],
+["ATLÉTICO","CELTA"],
+["LEVANTE","OSASUNA"],
+["R.SOCIEDAD","BETIS"],
+["OVIEDO","GETAFE"]
+],
+36:[
+["BETIS","ELCHE"],
+["CELTA","LEVANTE"],
+["GETAFE","MALLORCA"],
+["GIRONA","R.SOCIEDAD"],
+["ESPANYOL","ATHLETIC"],
+["OSASUNA","ATLÉTICO"]
+],
+37:[
+["ATHLETIC","CELTA"],
+["BARCELONA","BETIS"],
+["ELCHE","GETAFE"],
+["R.SOCIEDAD","VALENCIA"],
+["OSASUNA","ESPANYOL"]
+],
+38:[
+["BETIS","LEVANTE"],
+["CELTA","SEVILLA"],
+["ESPANYOL","R.SOCIEDAD"],
+["GETAFE","OSASUNA"],
+["R.MADRID","ATHLETIC"]
+]
+};
+
+const enfrentamientosDirectos = [
+["CELTA","GETAFE",0,2],
+["BETIS","ATHLETIC",1,2],
+["BETIS","R.SOCIEDAD",3,1],
+["CELTA","BETIS",1,1],
+["BETIS","OSASUNA",2,0],
+["OSASUNA","GETAFE",2,1],
+["CELTA","R.SOCIEDAD",1,1],
+["ATHLETIC","GETAFE",0,1],
+["OSASUNA","CELTA",2,3],
+["R.SOCIEDAD","ATHLETIC",3,2],
+["OSASUNA","R.SOCIEDAD",1,3],
+["CELTA","ATHLETIC",2,0],
+["BETIS","GETAFE",4,0],
+["OSASUNA","ATHLETIC",1,1],
+["GETAFE","R.SOCIEDAD",1,2],
+["R.SOCIEDAD","CELTA",3,1],
+["ATHLETIC","R.SOCIEDAD",1,1],
+["GETAFE","CELTA",0,0],
+["CELTA","OSASUNA",1,2],
+["GETAFE","BETIS",2,0],
+["BETIS","CELTA",1,1],
+["R.SOCIEDAD","OSASUNA",3,1],
+["ATHLETIC","BETIS",2,1],
+["GETAFE","ATHLETIC",2,0],
+["OSASUNA","BETIS",1,1],
+["ATHLETIC","OSASUNA",1,0],
+["R.SOCIEDAD","GETAFE",0,1]
+];
+
+let jornadaActual = 34;
+let resultados = {};
+
+function escudo(nombre){
+    return `<img src="escudos/${nombre.toLowerCase()}.png">`;
+}
+
+function renderNav(){
+    let html="";
+    Object.keys(jornadas).forEach(j=>{
+        html+=`<span onclick="cambiar(${j})" class="${j==jornadaActual?'activa':''}">${j}</span>`;
+    });
+    document.getElementById("nav").innerHTML=html;
+}
+
+function renderPartidos(){
+    let lista = jornadas[jornadaActual];
+    document.getElementById("tituloJornada").innerText="📅 Jornada "+jornadaActual;
+
+    let html="";
+    lista.forEach((p,i)=>{
+        let key=jornadaActual+"-"+i;
+        let gl=resultados[key]?.gl??"";
+        let gv=resultados[key]?.gv??"";
+
+        html+=`
+        <div class="partido">
+            <span class="equipo">${escudo(p[0])}${p[0]}</span>
+
+            <div class="marcador">
+                <input value="${gl}" oninput="guardar(${jornadaActual},${i},this.value,null)">
+                -
+                <input value="${gv}" oninput="guardar(${jornadaActual},${i},null,this.value)">
+            </div>
+
+            <span class="equipo" style="justify-content:flex-end">${p[1]}${escudo(p[1])}</span>
+        </div>`;
+    });
+
+    document.getElementById("partidos").innerHTML=html;
+}
+
+function guardar(j,i,gl,gv){
+    let key=j+"-"+i;
+    if(!resultados[key]) resultados[key]={};
+
+    if(gl!==null) resultados[key].gl=parseInt(gl);
+    if(gv!==null) resultados[key].gv=parseInt(gv);
+
+    calcular();
+}
+
+function cambiar(j){
+    jornadaActual=j;
+    renderNav();
+    renderPartidos();
+}
+
+function calcularMiniliga(equipos){
+
+    let datos = {};
+
+    equipos.forEach(e=>{
+        datos[e]={pts:0, dg:0, gf:0};
+    });
+
+    function procesar(local, visitante, gl, gv){
+        if(!equipos.includes(local) || !equipos.includes(visitante)) return;
+        if(isNaN(gl) || isNaN(gv)) return;
+
+        if(gl>gv) datos[local].pts+=3;
+        else if(gv>gl) datos[visitante].pts+=3;
+        else{
+            datos[local].pts+=1;
+            datos[visitante].pts+=1;
+        }
+
+        datos[local].dg += gl-gv;
+        datos[visitante].dg += gv-gl;
+
+        datos[local].gf += gl;
+        datos[visitante].gf += gv;
+    }
+
+    enfrentamientosDirectos.forEach(p=>{
+        procesar(p[0],p[1],p[2],p[3]);
+    });
+
+    Object.entries(resultados).forEach(([k,r])=>{
+        if(isNaN(r.gl)||isNaN(r.gv)) return;
+
+        let [j,i]=k.split("-");
+        let p=jornadas[j][i];
+
+        procesar(p[0],p[1],r.gl,r.gv);
+    });
+
+    return datos;
+}
+
+function calcular(){
+
+    let puntos={...base};
+
+    Object.entries(resultados).forEach(([k,r])=>{
+        if(isNaN(r.gl)||isNaN(r.gv)) return;
+
+        let [j,i]=k.split("-");
+        let p=jornadas[j][i];
+
+        if(r.gl>r.gv){
+            if(puntos[p[0]]!==undefined) puntos[p[0]]+=3;
+        }else if(r.gv>r.gl){
+            if(puntos[p[1]]!==undefined) puntos[p[1]]+=3;
+        }else{
+            if(puntos[p[0]]!==undefined) puntos[p[0]]+=1;
+            if(puntos[p[1]]!==undefined) puntos[p[1]]+=1;
+        }
+    });
+
+    let tabla = Object.entries(puntos).map(([e,p])=>({e,p}));
+
+    tabla.sort((a,b)=>b.p-a.p);
+
+    let final = [];
+    let i=0;
+
+    while(i < tabla.length){
+
+        let grupo = [tabla[i]];
+        let j=i+1;
+
+        while(j < tabla.length && tabla[j].p === tabla[i].p){
+            grupo.push(tabla[j]);
+            j++;
+        }
+
+        if(grupo.length > 1){
+
+            let equipos = grupo.map(t=>t.e);
+            let mini = calcularMiniliga(equipos);
+
+            grupo.sort((a,b)=>{
+                let A = mini[a.e];
+                let B = mini[b.e];
+
+                if(B.pts !== A.pts) return B.pts - A.pts;
+                if(B.dg !== A.dg) return B.dg - A.dg;
+                if(B.gf !== A.gf) return B.gf - A.gf;
+
+                return a.e.localeCompare(b.e);
+            });
+        }
+
+        final.push(...grupo);
+        i=j;
+    }
+
+    let realIndex = final.findIndex(t=>t.e==="R.SOCIEDAD");
+
+    let championsEquipo = final[0]?.e;
+    let europaLeagueEquipos = [];
+    let conferenceEquipo = null;
+
+    if(realIndex === 0){
+        // Real 5ª: va a Champions por liga, y su plaza de Copa desplaza Europa League hacia abajo.
+        if(final[1]) europaLeagueEquipos.push(final[1].e);
+        if(final[2]) europaLeagueEquipos.push(final[2].e);
+        if(final[3]) conferenceEquipo = final[3].e;
+
+    }else if(realIndex === 1){
+        // Real 6ª: Real Europa League + 7º Europa League + 8º Conference.
+        europaLeagueEquipos.push("R.SOCIEDAD");
+        if(final[2]) europaLeagueEquipos.push(final[2].e);
+        if(final[3]) conferenceEquipo = final[3].e;
+
+    }else if(realIndex === 2){
+        // Real 7ª: 6º Europa League + Real Europa League + 8º Conference.
+        if(final[1]) europaLeagueEquipos.push(final[1].e);
+        europaLeagueEquipos.push("R.SOCIEDAD");
+        if(final[3]) conferenceEquipo = final[3].e;
+
+    }else{
+        // Real 8ª o peor: 6º Europa League + Real Europa League + 7º Conference.
+        if(final[1]) europaLeagueEquipos.push(final[1].e);
+        europaLeagueEquipos.push("R.SOCIEDAD");
+        if(final[2]) conferenceEquipo = final[2].e;
+    }
+
+    let html="";
+
+    final.forEach((t,i)=>{
+
+        let clase = "";
+
+        if(t.e === "R.SOCIEDAD"){
+            clase = "real";
+        }else if(t.e === championsEquipo){
+            clase = "champions";
+        }else if(europaLeagueEquipos.includes(t.e)){
+            clase = "europaleague";
+        }else if(t.e === conferenceEquipo){
+            clase = "conference";
+        }
+
+        html+=`
+        <div class="fila ${clase}">
+            <span>${i+5}. ${escudo(t.e)} ${t.e}</span>
+            <span>${t.p}</span>
+        </div>`;
+    });
+
+    document.getElementById("tabla").innerHTML=html;
+}
+
+renderNav();
+renderPartidos();
+calcular();
+
+</script>
+
+</body>
+</html>
